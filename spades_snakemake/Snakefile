@@ -1,0 +1,49 @@
+import os
+
+
+BASE_INPUT_DIR = "Enter your path"
+BASE_OUTPUT_DIR = "Enter your path"
+
+#get all the directories in the input directory
+DIRECTORIES = [d for d in os.listdir(BASE_INPUT_DIR) if os.path.isdir(os.path.join(BASE_INPUT_DIR, d))]
+
+# get all the R1.fastq.gz files
+samples = []
+for dir in DIRECTORIES:
+    input_dir = os.path.join(BASE_INPUT_DIR, dir, "ILLUMINA_DATA")
+    if os.path.exists(input_dir):
+        r1_files = [f for f in os.listdir(input_dir) if f.endswith("R1_trimmed.fastq.gz")]
+        for r1_file in r1_files:
+            r2_file = r1_file.replace("_R1_trimmed.fastq.gz", "_R2_trimmed.fastq.gz")
+            if os.path.exists(os.path.join(input_dir, r2_file)):
+                sample = os.path.join(dir,"ILLUMINA_DATA",r1_file.replace("_R1_trimmed.fastq.gz",""))
+                samples.append(sample)
+
+rule all:
+    input:
+        expand(os.path.join(BASE_OUTPUT_DIR, "{sample}_assembly"), sample=samples)
+
+
+rule decompress_fastq:
+    input:
+        r1=os.path.join(BASE_INPUT_DIR,"{sample}_R1_trimmed.fastq.gz"),
+        r2=os.path.join(BASE_INPUT_DIR,"{sample}_R2_trimmed.fastq.gz")
+    output:
+        r1_dec=os.path.join(BASE_INPUT_DIR,"{sample}_R1_trimmed.fastq"),
+        r2_dec=os.path.join(BASE_INPUT_DIR,"{sample}_R2_trimmed.fastq")
+    shell:
+        """
+        gunzip -d {input.r1}
+        gunzip -d {input.r2}
+        """
+
+rule run_spades:
+    input:
+        r1=os.path.join(BASE_INPUT_DIR, "{sample}_R1_trimmed.fastq"),
+        r2=os.path.join(BASE_INPUT_DIR, "{sample}_R2_trimmed.fastq")
+    output:
+        assembly=directory(os.path.join(BASE_OUTPUT_DIR, "{sample}_assembly"))
+    shell:
+        """
+        spades.py -o {output.assembly} -1 {input.r1} -2 {input.r2}
+        """

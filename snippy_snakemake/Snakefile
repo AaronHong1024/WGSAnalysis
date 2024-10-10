@@ -1,0 +1,73 @@
+import os
+import glob
+
+def get_samples():
+    # change the path to the actual path where the fastq files are stored
+    samples = []
+    base_path = " "
+    for strain in ["Acinetobacterbaumannii","Pseudomonasaeruginosa", "Staphylococcusaureus", "Klebsiellapneumoniae"]:
+        strain_path = os.path.join(base_path,strain)
+        for item in os.listdir(strain_path):
+            item_path = os.path.join(strain_path, item)
+            if os.path.isdir(item_path) and item.startswith("MCR_CVU_"):
+                samples.append((strain, item))
+    return samples
+
+all_samples = get_samples()
+def get_valid_sample_paths():
+    valid_paths = []
+    strains = [ "Acinetobacterbaumannii","Pseudomonasaeruginosa", "Staphylococcusaureus", "Klebsiellapneumoniae"]
+    # change the path to the actual path where the fastq files are stored
+    base_path = " "
+    for strain in strains:
+        strain_path = os.path.join(base_path, strain)
+        if os.path.exists(strain_path):
+            for item in os.listdir(strain_path):
+                item_path = os.path.join(strain_path,item)
+                if os.path.isdir(item_path) and item.startswith("MCR_CVU_"):
+                    snps_path = os.path.join(item_path,"ILLUMINA_DATA",f"{item}_mysnps")
+                    valid_paths.append(snps_path)
+    return valid_paths
+
+def get_fastq_files(wildcards):
+    # change the path to the actual path where the fastq files are stored
+
+    path = f" "
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Path does not exist: {path}")
+
+    R1_files = []
+    R2_files = []
+
+    for file in os.listdir(path):
+        if file.endswith("R1_trimmed.fastq"):
+            R1_files.append(os.path.join(path,file))
+        elif file.endswith("R2_trimmed.fastq"):
+            R2_files.append(os.path.join(path,file))
+
+    R1_files = sorted(R1_files)
+    R2_files = sorted(R2_files)
+
+    if not R1_files or not R2_files:
+        raise FileNotFoundError(f"No matching FASTQ files found for {wildcards.strain}/{wildcards.sample}")
+
+    return R1_files[0], R2_files[0]
+
+
+rule all:
+    input: get_valid_sample_paths()
+
+rule snippy:
+    input:
+        # change the path to the actual path where the reference gene stored
+        ref = lambda wildcards: f" ",
+        R1 = lambda wildcards: get_fastq_files(wildcards)[0],
+        R2= lambda wildcards: get_fastq_files(wildcards)[1]
+
+
+    output:
+        outdir = "Decide your output directory"
+    shell:
+        "snippy --cpu 16 --outdir {output.outdir} --ref {input.ref} --R1 {input.R1} --R2 {input.R2}"
+
+
