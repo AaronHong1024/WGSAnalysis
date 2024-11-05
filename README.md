@@ -1,4 +1,4 @@
-# Virus Analysis
+# Whole Genome Sequencing(WGS) Analysis
 A Workflow for Analyzing Staphylococcus aureus and Carbapenem-Resistant Gram-Negative Bacteria (Acinetobacter baumannii, Pseudomonas aeruginosa, and Klebsiella pneumoniae) in Chronic Ventilator Units in Nursing Homes
 ## Requirements
 The following tools are required for this analysis:
