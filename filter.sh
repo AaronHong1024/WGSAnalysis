@@ -16,6 +16,5 @@ for folder in */; do
     fi
 done
 
-# 打印完成的消息
 echo "Filtering complete."
 
