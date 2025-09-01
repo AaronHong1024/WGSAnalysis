@@ -1,7 +1,7 @@
 # Whole Genome Sequencing (WGS) Analysis
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub release](https://img.shields.io/github/release/AaronHong1024/WGSAnalysis.svg)](https://github.com/AaronHong1024/WGSAnalysis/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/AaronHong1024/WGSAnalysis)](https://github.com/AaronHong1024/WGSAnalysis/releases)
 
 [Enhanced barrier precautions to prevent transmission of Staphylococcus aureus and Carbapenem-resistant organisms in nursing home chronic ventilator units](https://www.cambridge.org/core/journals/infection-control-and-hospital-epidemiology/article/abs/enhanced-barrier-precautions-to-prevent-transmission-of-staphylococcus-aureus-and-carbapenemresistant-organisms-in-nursing-home-chronic-ventilator-units/43FBB459BB569B052DEDF87EA57193FB)
 
